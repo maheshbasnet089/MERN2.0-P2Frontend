@@ -32,13 +32,13 @@ const Navbar = () => {
       </div>
       <nav className="space-x-3 md:space-x-6">
         <Link
-          to="/register"
+          to="/login"
           className="text-sm font-semibold text-gray-900 hover:text-blue-600 dark:text-gray-100 dark:hover:text-blue-400"
         >
           <span>Login</span>
         </Link>
         <Link
-          to="/login"
+          to="/register"
           className="text-sm font-semibold text-gray-900 hover:text-blue-600 dark:text-gray-100 dark:hover:text-blue-400"
         >
           <span>Register</span>
