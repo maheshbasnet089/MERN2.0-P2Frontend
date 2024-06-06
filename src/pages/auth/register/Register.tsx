@@ -10,7 +10,6 @@ import { useEffect } from "react"
 const Register = () => {
   const navigate = useNavigate()
   const {status}  = useAppSelector((state)=>state.auth)
-  console.log(status)
   const dispatch = useAppDispatch()
   const handleRegister = async (data:UserDataType)=>{
     dispatch(register(data))
