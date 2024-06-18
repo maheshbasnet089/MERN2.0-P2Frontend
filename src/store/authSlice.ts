@@ -1,5 +1,5 @@
 import {createSlice,PayloadAction} from '@reduxjs/toolkit' 
-import API from '../http'
+import {API} from '../http'
 import { Status } from '../globals/types/types'
 
 interface RegisterData{
