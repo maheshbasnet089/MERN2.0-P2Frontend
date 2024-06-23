@@ -10,8 +10,10 @@ const SingleProduct = () => {
     const {id} = useParams()
     const dispatch = useAppDispatch()
     const {status,singleProduct} = useAppSelector((state)=>state.products)
+    console.log(singleProduct)
     useEffect(()=>{
         if(id){    
+            console.log("triggered",id)
         dispatch(fetchByProductId(id))
         }
     },[])
