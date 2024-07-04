@@ -158,7 +158,7 @@ const Checkout = () => {
       </div>
       <div className="mt-6 flex items-center justify-between">
         <p className="text-sm font-medium text-gray-900">Total</p>
-        <p className="text-2xl font-semibold text-gray-900">Rs {subtotal + 0}</p>
+        <p className="text-2xl font-semibold text-gray-900">Rs {subtotal + 100}</p>
       </div>
     </div>
 
