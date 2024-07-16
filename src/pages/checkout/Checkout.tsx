@@ -56,18 +56,20 @@ const Checkout = () => {
         // if(status === Status.SUCCESS){
         //   alert("Order Placed successfully")
         // }
-        if(khaltiUrl){
-          window.location.href = khaltiUrl
-        }
+ 
 
     }
     useEffect(()=>{
-      if(status === Status.SUCCESS){
+      if(khaltiUrl){
+        window.location.href = khaltiUrl
+        return
+      }
+      if(status === Status.SUCCESS ){
         alert("Order Placed successfully")
         navigate("/")
 
       }
-    },[status,dispatch])
+    },[status, khaltiUrl])
     
   return (
     <>

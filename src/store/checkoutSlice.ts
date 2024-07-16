@@ -96,3 +96,20 @@ export function fetchMyOrderDetails(id:string){
         }
     }
 }
+
+export function cancelMyOrder(id:string){
+    return async function cancelMyOrderThunk(dispatch : AppDispatch){
+        dispatch(setStatus(Status.LOADING))
+        try {
+            const response = await APIAuthenticated.patch('/order/customer/' + id)
+            if(response.status === 200){
+                dispatch(setStatus(Status.SUCCESS))
+              
+            }else{
+                dispatch(setStatus(Status.ERROR))
+            }
+        } catch (error) {
+            dispatch(setStatus(Status.ERROR))
+        }
+    }
+}

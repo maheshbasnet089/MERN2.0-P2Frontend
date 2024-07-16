@@ -1,20 +1,32 @@
 import { useEffect } from "react"
 import Navbar from "../../../globals/components/navbar/Navbar"
 import { useAppDispatch, useAppSelector } from "../../../store/hooks"
-import { fetchMyOrderDetails } from "../../../store/checkoutSlice"
-import { useParams } from "react-router-dom"
+import { cancelMyOrder, fetchMyOrderDetails } from "../../../store/checkoutSlice"
+import { useNavigate, useParams } from "react-router-dom"
+import { OrderStatus } from "../../../globals/types/checkoutTypes"
 
 
 const MyOrdersDetails = () => {
   const {id} = useParams()
-  const {orderDetails}  = useAppSelector((state)=>state.orders)
+  const {orderDetails,status}  = useAppSelector((state)=>state.orders)
   console.log(orderDetails)
+  const navigate  = useNavigate()
   const dispatch = useAppDispatch()
-  useEffect(()=>{
+  useEffect( ()=>{
     if(id) {
       dispatch(fetchMyOrderDetails(id))
     }
   },[])
+
+
+  const handleCancelOrder = async ()=>{
+    if(id){
+      await dispatch(cancelMyOrder(id))
+      await dispatch(fetchMyOrderDetails(id))
+      // navigate("/myorders")
+    }
+  }
+
   return (
     <>
     <Navbar />
@@ -64,20 +76,20 @@ const MyOrdersDetails = () => {
 
               <div className="flex justify-between items-center w-full">
                 <p className="text-base dark:text-white leading-4 text-gray-800">Payment Method</p>
-                <p className="text-base dark:text-gray-300 leading-4 text-gray-600">{orderDetails[0].Order.Payment.paymentMethod}</p>
+                <p className="text-base dark:text-gray-300 leading-4 text-gray-600">{orderDetails[0]?.Order?.Payment?.paymentMethod}</p>
               </div>
               <div className="flex justify-between items-center w-full">
                 <p className="text-base dark:text-white leading-4 text-gray-800">Payment Status</p>
-                <p className="text-base dark:text-gray-300 leading-4 text-gray-600">{orderDetails[0].Order.Payment.paymentStatus}</p>
+                <p className="text-base dark:text-gray-300 leading-4 text-gray-600">{orderDetails[0]?.Order?.Payment?.paymentStatus}</p>
               </div>
               <div className="flex justify-between items-center w-full">
                 <p className="text-base dark:text-white leading-4 text-gray-800">Order Status</p>
-                <p className="text-base dark:text-gray-300 leading-4 text-gray-600">{orderDetails[0].Order.orderStatus}</p>
+                <p className="text-base dark:text-gray-300 leading-4 text-gray-600">{orderDetails[0]?.Order?.orderStatus}</p>
               </div>
             </div>
             <div className="flex justify-between items-center w-full">
               <p className="text-base dark:text-white font-semibold leading-4 text-gray-800">Total</p>
-              <p className="text-base dark:text-gray-300 font-semibold leading-4 text-gray-600"></p>
+              <p className="text-base dark:text-gray-300 font-semibold leading-4 text-gray-600">{orderDetails[0]?.Order?.totalAmount}</p>
             </div>
           </div>
           <div className="flex flex-col justify-center px-4 py-6 md:p-6 xl:p-8 w-full bg-gray-50 dark:bg-gray-800 space-y-6">
@@ -104,23 +116,27 @@ const MyOrdersDetails = () => {
           <div className="flex justify-between xl:h-full items-stretch w-full flex-col mt-6 md:mt-0">
             <div className="flex justify-center md:justify-start xl:flex-col flex-col md:space-x-6 lg:space-x-8 xl:space-x-0 space-y-4 xl:space-y-12 md:space-y-0 md:flex-row items-center md:items-start">
               <div className="flex justify-center md:justify-start items-center md:items-start flex-col space-y-4 xl:mt-8">
-                <p className="text-base dark:text-white font-semibold leading-4 text-center md:text-left text-gray-800">Address : {orderDetails[0].Order.shippingAddress} </p>
-                <p className="w-48 lg:w-full dark:text-gray-300 xl:w-48 text-center md:text-left text-sm leading-5 text-gray-600">Phone :  {orderDetails[0].Order.phoneNumber}</p>
+                <p className="text-base dark:text-white font-semibold leading-4 text-center md:text-left text-gray-800">Address : {orderDetails[0]?.Order.shippingAddress} </p>
+                <p className="w-48 lg:w-full dark:text-gray-300 xl:w-48 text-center md:text-left text-sm leading-5 text-gray-600">Phone :  {orderDetails[0]?.Order.phoneNumber}</p>
               </div>
 
             </div>
             <div className="flex w-full justify-center items-center md:justify-start md:items-start">
             <>
-              <button className="mt-6 md:mt-0 dark:border-white dark:hover:bg-gray-900 dark:bg-transparent dark:text-white py-3 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-800 border border-gray-800 font-medium w-96 2xl:w-full text-base font-medium leading-4 text-gray-800" style={{marginTop:'10px'}}>Edit Order</button>
+
          
-         <button className="mt-6 md:mt-0 dark:border-white dark:hover:bg-gray-900 dark:bg-transparent dark:text-white py-3 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-800 border border-gray-800 font-medium w-96 2xl:w-full text-base font-medium leading-4 text-gray-800" style={{marginTop:'10px'}}  >Cancel Order</button>
+        {
+          orderDetails[0]?.Order?.orderStatus !== OrderStatus.Cancel && ( 
+            <button className="mt-6 md:mt-0 dark:border-white dark:hover:bg-gray-900 dark:bg-transparent dark:text-white py-3 hover:bg-red-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-800 border border-gray-800 font-medium w-96 2xl:w-full text-base font-medium leading-4 text-gray-800" style={{marginTop:'10px'}} onClick={handleCancelOrder}  >Cancel Order</button>
+          )
+        }
             </>
             </div>
-
+{/* 
             <div className="flex w-full justify-center items-center md:justify-start md:items-start">
               <button className="mt-6 md:mt-0 dark:border-white dark:hover:bg-gray-900 dark:bg-transparent dark:text-white py-3 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-800 border border-gray-800 font-medium w-96 2xl:w-full text-base font-medium leading-4 text-gray-800" style={{marginTop:'10px',backgroundColor:'red',color:'white'}}>Delete Order</button>
   
-            </div>
+            </div> */}
    
           </div>
         </div>

@@ -6,7 +6,7 @@ export enum PaymentMethod{
     Khalti = 'khalti'
 }
 
-enum OrderStatus{
+export enum OrderStatus{
     Pending = 'pending',
     Delivered = 'delivered',
     Ontheway = 'ontheway',
