@@ -1,17 +1,23 @@
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import Navbar from "../../../globals/components/navbar/Navbar"
 import { useAppDispatch, useAppSelector } from "../../../store/hooks"
 import { fetchMyOrders } from "../../../store/checkoutSlice"
 import { Link } from "react-router-dom"
+import { OrderStatus } from "../../../globals/types/checkoutTypes"
 
 
 const MyOrders = () => {
     const dispatch = useAppDispatch()
     const {myOrders} = useAppSelector((state)=>state.orders)
+    const [selectedItem,setSelectedItem] = useState<OrderStatus>(OrderStatus.All)
+    const [searchTerm,setSearchTerm] = useState<string>("")
+    const [date,setDate] = useState<string>("")
     useEffect(()=>{
         dispatch(fetchMyOrders())
     },[])
-    console.log(myOrders[0])
+   const filteredOrders  =  myOrders.filter((order)=>selectedItem === OrderStatus.All || order.orderStatus === selectedItem).filter((order)=>order.id.toLowerCase().includes(searchTerm) || order.Payment.paymentMethod.toLowerCase().includes(searchTerm) || order.totalAmount.toString().includes(searchTerm))
+   .filter((order)=> date === "" || new Date(order.createdAt).toLocaleDateString() === new Date(date).toLocaleDateString())
+
   return (
     <>
     <Navbar />
@@ -25,14 +31,14 @@ const MyOrders = () => {
                 <div className="flex flex-row mb-1 sm:mb-0">
            
                     <div className="relative">
-                        <select
+                        <select onChange={(e)=>setSelectedItem(e.target.value as OrderStatus)}
                             className="appearance-none h-full rounded-r border-t sm:rounded-r-none sm:border-r-0 border-r border-b block appearance-none w-full bg-white border-gray-400 text-gray-700 py-2 px-4 pr-8 leading-tight focus:outline-none focus:border-l focus:border-r focus:bg-white focus:border-gray-500">
-                            <option value='all'>all</option>
-                            <option value='pending'>pending</option>
-                            <option value='delivered'>delivered</option>
-                            <option value='ontheway'>ontheway</option>
-                            <option value='cancelled'>cancelled</option>
-                            <option value='preparation'>preparation</option>
+                            <option value={OrderStatus.All}>all</option>
+                            <option value={OrderStatus.Pending}>pending</option>
+                            <option value={OrderStatus.Delivered}>delivered</option>
+                            <option value={OrderStatus.Ontheway}>ontheway</option>
+                            <option value={OrderStatus.Cancel}>cancelled</option>
+                            <option value={OrderStatus.Preparation}>preparation</option>
                         </select>
                         <div
                             className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
@@ -51,13 +57,16 @@ const MyOrders = () => {
                         </svg>
                     </span>
                     <input placeholder="Search"
-                    value=""
+                    value={searchTerm}
+                    onChange={(e)=>setSearchTerm(e.target.value)}
                         className="appearance-none rounded-r rounded-l sm:rounded-l-none border border-gray-400 border-b block pl-8 pr-6 py-2 w-full bg-white text-sm placeholder-gray-400 text-gray-700 focus:bg-white focus:placeholder-gray-600 focus:text-gray-700 focus:outline-none" />
                 </div>
                 <div className="block relative">
                 
                     <input placeholder="Search"
-                    type='date'
+                    type='date' 
+                    value={date}
+                    onChange={(e)=>setDate(e.target.value)}
                         className="appearance-none rounded-r rounded-l sm:rounded-l-none border border-gray-400 border-b block pl-8 pr-6 py-2 w-full bg-white text-sm placeholder-gray-400 text-gray-700 focus:bg-white focus:placeholder-gray-600 focus:text-gray-700 focus:outline-none" />
                 </div>
             </div>
@@ -92,7 +101,7 @@ const MyOrders = () => {
                         <tbody>
                    
                              {
-                                myOrders.length > 0  && myOrders.map((order)=>{
+                                filteredOrders.length > 0  && filteredOrders.map((order)=>{
                                     return ( 
                                         <tr>
                                         {/* <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
@@ -115,7 +124,7 @@ const MyOrders = () => {
                                            </Link>
                                         </td>
                                         <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
-                                            <p className="text-gray-900 whitespace-no-wrap">{order.totalAmount + 100}</p>
+                                            <p className="text-gray-900 whitespace-no-wrap">{order.totalAmount }</p>
                                         </td>
                                         <td className="px-5 py-5 border-b border-gray-200 bg-white text-sm">
                                             <p className="text-gray-900 whitespace-no-wrap">

@@ -11,7 +11,8 @@ export enum OrderStatus{
     Delivered = 'delivered',
     Ontheway = 'ontheway',
     Cancel = 'cancelled',
-    Preparation = 'preparation'
+    Preparation = 'preparation',
+    All = 'all'
 }
 
 export interface ItemDetails{
