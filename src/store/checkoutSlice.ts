@@ -31,11 +31,19 @@ const orderSlice = createSlice({
         setMyOrderDetails(state:OrderResponseData, action:PayloadAction<OrderDetails[]>){
             state.orderDetails = action.payload
         },
+        updateOrderStatus(state,action){
+            const status = action.payload.status 
+            const orderId = action.payload.orderId
+           const updatedOrder =  state.myOrders.map((order)=>
+                order.id === orderId ? {...order,orderStatus : status} : order
+            )
+            state.myOrders = updatedOrder
+           }
 
     }
 })
 
-export const {setItems,setStatus,setKhaltiUrl,setMyOrders,setMyOrderDetails} = orderSlice.actions
+export const {setItems,setStatus,setKhaltiUrl,updateOrderStatus,setMyOrders,setMyOrderDetails} = orderSlice.actions
 export default orderSlice.reducer 
 
 
@@ -111,5 +119,11 @@ export function cancelMyOrder(id:string){
         } catch (error) {
             dispatch(setStatus(Status.ERROR))
         }
+    }
+}
+
+export function updateOrderStatusInStore(data:any) {
+    return function  updateOrderStatusInStoreThunk(dispatch:AppDispatch){
+        dispatch(updateOrderStatus(data))
     }
 }

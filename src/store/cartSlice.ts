@@ -50,9 +50,14 @@ export function addToCart(productId:string){
     return async function addToCartThunk(dispatch : AppDispatch){
         dispatch(setStatus(Status.LOADING))
         try {
+            console.log(localStorage.getItem('token'))
             const response = await APIAuthenticated.post('/customer/cart',{
                 productId,
                 quantity : 1
+            }, {
+                headers : {
+                    Authorization : localStorage.getItem('token')
+                }
             })
             if(response.status === 200){
                 dispatch(setStatus(Status.SUCCESS))
